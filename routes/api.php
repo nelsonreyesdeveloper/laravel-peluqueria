@@ -21,6 +21,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
 
+    Route::get('/user', function (Request $request) {
+        /*Comprobar si el usuario confirmo el email */
+        if ($request->user()->hasVerifiedEmail()) {
+            return $request->user();
+        } else {
+            /* No quiero retornar json quiero retornar error para la consola javascript */
+            return abort(403, '');
+        }
+    });
+
     /* Servicios */
     Route::middleware('verified')->delete('/servicios/{servicio}', [ServicioController::class, 'destroy']);
     Route::middleware('verified')->put('/servicios/{servicio}', [ServicioController::class, 'update']);
@@ -34,12 +44,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /* Horas */
     Route::middleware('verified')->post('/horas', [HoraController::class, 'store']);
-
-
-    Route::middleware('verified')->get('/user', function (Request $request) {
-        /*Comprobar si el usuario confirmo el email */
-        return $request->user();
-    });
 
     Route::post('/logout', [AuthController::class, 'logout']);
 
