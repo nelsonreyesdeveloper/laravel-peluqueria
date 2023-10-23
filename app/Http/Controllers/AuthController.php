@@ -37,16 +37,15 @@ class AuthController extends Controller
         /* autenticar el usuario  */
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
-                'data' => [
-                    'data' =>  ['El correo o la contraseña son incorrectos']
-                ]
+                'errors' =>  [['El correo o la contraseña son incorrectos']]
             ], 401);
         }
+        $token = Auth::user()->createToken('token')->plainTextToken;
 
         return response()->json([
             'user' => Auth::user(),
-            'token' => Auth::user()->createToken('token')->plainTextToken
-        ]);
+            'token' =>  $token
+        ])->withCookie(cookie('basura',  $token, 60 * 24));
     }
 
 
