@@ -27,15 +27,14 @@ Route::middleware('auth:sanctum')->group(function () {
             return $request->user();
         } else {
             /* No quiero retornar json quiero retornar error para la consola javascript */
-            return abort(403, '');
+            return abort(403, 'Usuario no verificado');
         }
     });
 
     /* Servicios */
     Route::middleware('verified')->delete('/servicios/{servicio}', [ServicioController::class, 'destroy']);
     Route::middleware('verified')->put('/servicios/{servicio}', [ServicioController::class, 'update']);
-    Route::middleware('verified')->get('/servicios', [ServicioController::class, 'index']);
-
+    
     /* Citas */
     Route::middleware('verified')->get('/citas', [CitaController::class, 'index']);
     Route::middleware('verified')->post('/citas', [CitaController::class, 'store']);
@@ -55,3 +54,4 @@ Route::get('email/verify/{id}', [VerificationController::class, 'verify'])->name
 /* Autenticacion */
 Route::post('/register', [AuthController::class, 'registro']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/servicios', [ServicioController::class, 'index']);
