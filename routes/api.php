@@ -27,9 +27,9 @@ Route::middleware('auth:sanctum')->group(function () {
             return $request->user();
         } else {
             /* No quiero retornar json quiero retornar error para la consola javascript */
-            return response ()->json([
-                $request->user(),
-            ],403);
+            return response()->json([
+                $request->user()->email,
+            ], 403);
         }
     });
 
