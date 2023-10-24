@@ -24,7 +24,7 @@ class RegistroRequest extends FormRequest
         return [
             'name' => ['required', 'string'],
             'email' => ['required', 'email', 'unique:users', 'regex:/^(.+\@gmail\.com|.+@yahoo\.com|.+@hotmail\.com|.+@yahoo\.com.es|.+@outlook\.com)$/i'],
-            'password' => ['required', 'min:8', 'confirmed']
+            'password' => ['required', 'min:8', 'confirmed','regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/']
         ];
     }
 
@@ -37,7 +37,8 @@ class RegistroRequest extends FormRequest
             'password.required' => 'La contraseña es obligatoria',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres',
             'password.confirmed' => 'Las contraseñas no coinciden',
-            'email.regex' => 'El email no es válido, solo se permite gmail, yahoo, hotmail, outlook'
+            'email.regex' => 'El email no es válido, solo se permite gmail, yahoo, hotmail, outlook',
+            'password.regex' => 'La contraseña debe tener 8 caracteres, al menos una letra mayúscula, una letra minúscula, un número y un caracter especial'
         ];
     }
 }
