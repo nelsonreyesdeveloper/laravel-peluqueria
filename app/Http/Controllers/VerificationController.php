@@ -23,7 +23,7 @@ class VerificationController extends Controller
             $user->markEmailAsVerified();
         }
 
-        return redirect()->to('https://peluqueria-next-js.vercel.app/citas');
+        return redirect()->to(config('app.front').'/mis-citas');
     }
 
     public function resend()
