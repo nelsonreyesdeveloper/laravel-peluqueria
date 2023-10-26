@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CitaController;
+use App\Http\Controllers\CitasUserController;
 use App\Http\Controllers\HoraController;
 use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\VerificationController;
@@ -42,6 +43,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('verified')->post('/citas', [CitaController::class, 'store']);
     Route::middleware('verified')->delete('/citas/{id}', [CitaController::class, 'destroy']);
     Route::middleware('verified')->put('/citas/{id}', [CitaController::class, 'update']);
+
+    /* CitasUsuario */
+    route::middleware('verified')->get("citas/user", CitasUserController::class);
 
     /* Horas */
     Route::middleware('verified')->post('/horas', [HoraController::class, 'store']);

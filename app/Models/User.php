@@ -51,4 +51,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $this->notify(new EmailVerification); // my notification
     }
+
+    public function citas()
+    {
+        return $this->hasMany(Cita::class);
+    }
 }
