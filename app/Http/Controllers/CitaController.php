@@ -44,10 +44,18 @@ class CitaController extends Controller
      */
     public function store(Request $request)
     {
+      
         $citaRepetida = Cita::where('hora_cita', $request->citaPost['hora_cita'])->where('fecha_cita', $request->citaPost['fecha_cita'])->get();
 
         if ($citaRepetida->count() > 0) {
             return response()->json(['data' => 'La hora acaba de ser registrada por otro cliente'], 400);
+        }
+        /* Validando que el usuario tenga solo una cita activa  */
+        
+        $citaActiva = auth()->user()->citas()->where('estado', 0)->get();
+        
+        if ($citaActiva->count() >= 2) {
+            return response()->json(['data' => 'Solo puedes tener 2 citas activas'], 400);
         }
 
         try {
