@@ -52,7 +52,6 @@ class EmailNewCitaAdmin extends Notification
             ->subject(Lang::get('Nueva Cita de ' . Str::title($this->cita->user->name) . '.'))
             ->line('Nueva Cita de ' . Str::title($this->cita->user->name) . '.')
             ->line('Fecha: ' . $fecha . ' Hora: ' . $this->cita->hora_cita)
-            ->line('El cliente debera pagar: $' . $this->cita->total)
             ->line('Los servicios son:');
 
         foreach ($serviciosLines as $servicioLine) {
