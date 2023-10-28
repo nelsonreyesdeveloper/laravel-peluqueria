@@ -40,11 +40,26 @@ class EmailNewCitaAdmin extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $fecha =  Carbon::parse($this->cita->fecha_cita)->locale('es')->isoFormat('D [de] MMMM [de] YYYY');
-        return (new MailMessage)
+
+        $serviciosLines = [];
+
+        foreach ($this->cita->servicios as $servicio) {
+            $servicioLine = $servicio->nombre . ' CANTIDAD: ' . $servicio->pivot->cantidad . ' SUBTOTAL: $' . $servicio->pivot->subtotal;
+            $serviciosLines[] = $servicioLine;
+        }
+
+        $message = (new MailMessage)
             ->subject(Lang::get('Nueva Cita de ' . Str::title($this->cita->user->name) . '.'))
             ->line('Nueva Cita de ' . Str::title($this->cita->user->name) . '.')
             ->line('Fecha: ' . $fecha . ' Hora: ' . $this->cita->hora_cita)
-            ->line('El cliente debera pagar: $' . $this->cita->total);
+            ->line('El cliente debera pagar: $' . $this->cita->total)
+            ->line('Los servicios son:');
+
+        foreach ($serviciosLines as $servicioLine) {
+            $message->line($servicioLine);
+        }
+
+        return $message->line('El cliente debera pagar: $' . $this->cita->total);
     }
 
     /**
