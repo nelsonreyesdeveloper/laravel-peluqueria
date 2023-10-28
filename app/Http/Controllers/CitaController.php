@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\CitaCollection;
-use App\Models\Cita;
-use App\Models\CitasServicios;
+use App\Notifications\EmailNewCitaUser;
 use Carbon\Carbon;
+use App\Models\Cita;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\CitasServicios;
+use App\Http\Resources\CitaCollection;
+use App\Notifications\EmailNewCitaAdmin;
 
 class CitaController extends Controller
 {
@@ -44,23 +47,25 @@ class CitaController extends Controller
      */
     public function store(Request $request)
     {
-      
+
         $citaRepetida = Cita::where('hora_cita', $request->citaPost['hora_cita'])->where('fecha_cita', $request->citaPost['fecha_cita'])->get();
 
         if ($citaRepetida->count() > 0) {
             return response()->json(['data' => 'La hora acaba de ser registrada por otro cliente'], 400);
         }
         /* Validando que el usuario tenga solo una cita activa  */
-        
+
         $citaActiva = auth()->user()->citas()->where('estado', 0)->get();
-        
+
         if ($citaActiva->count() >= 2) {
             return response()->json(['data' => 'Solo puedes tener 2 citas activas'], 400);
         }
 
         try {
+            $user = auth()->user();
+
             $cita = Cita::create([
-                'user_id' => auth()->user()->id,
+                'user_id' =>  $user->id,
                 'fecha_cita' => $request->citaPost['fecha_cita'],
                 'hora_cita' => $request->citaPost['hora_cita'],
                 'total' => $request->citaPost['total']
@@ -74,6 +79,10 @@ class CitaController extends Controller
                     'subtotal' => $servicio['subtotal']
                 ]);
             }
+            $user->notify(new EmailNewCitaUser($cita));
+
+            $admin = User::where('admin', 1)->first();
+            $admin->notify(new EmailNewCitaAdmin($cita));
 
             return response()->json($cita, 201);
         } catch (\Throwable $th) {
