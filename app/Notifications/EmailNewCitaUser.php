@@ -48,7 +48,7 @@ class EmailNewCitaUser extends Notification
 
         $message = (new MailMessage)
             ->subject('PELUQUERIA | Acabas de registrar una nueva cita.')
-            ->line('ESTIMADO CLIENTE ' . Str::title($this->cita->user->name) . '.')
+            ->line('ESTIMADO CLIENTE: ' . Str::title($this->cita->user->name) . '.')
             ->line('Fecha: ' . $fecha)
             ->line('Hora: ' . $this->cita->hora_cita)
             ->line('Los servicios son:');
