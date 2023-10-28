@@ -42,14 +42,15 @@ class EmailNewCitaUser extends Notification
         $serviciosLines = [];
 
         foreach ($this->cita->servicios as $servicio) {
-            $servicioLine = $servicio->nombre . ' cantidad: ' . $servicio->pivot->cantidad . ' subtotal: $' . $servicio->pivot->subtotal;
+            $servicioLine = $servicio->nombre . ' CANTIDAD: ' . $servicio->pivot->cantidad . ' SUBTOTAL: $' . $servicio->pivot->subtotal;
             $serviciosLines[] = $servicioLine;
         }
 
         $message = (new MailMessage)
-            ->subject('Acabas de registrar una nueva cita.')
-            ->line('Tienes una cita pendiente ' . Str::title($this->cita->user->name) . '.')
-            ->line('Fecha: ' . $fecha . ' Hora: ' . $this->cita->hora_cita)
+            ->subject('PELUQUERIA | Acabas de registrar una nueva cita.')
+            ->line('ESTIMADO CLIENTE ' . Str::title($this->cita->user->name) . '.')
+            ->line('Fecha: ' . $fecha)
+            ->line('Hora: ' . $this->cita->hora_cita)
             ->line('Los servicios son:');
 
         foreach ($serviciosLines as $servicioLine) {
