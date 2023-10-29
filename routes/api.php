@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\CitasUserController;
 use App\Http\Controllers\HoraController;
+use App\Http\Controllers\RecuperarCuentaController;
 use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\VerificationController;
 use Illuminate\Http\Request;
@@ -60,4 +61,9 @@ Route::get('email/verify/{id}', [VerificationController::class, 'verify'])->name
 /* Autenticacion */
 Route::post('/register', [AuthController::class, 'registro']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/forgot-password', [RecuperarCuentaController::class, 'recuperar']);
+
+Route::post('/reset-password', [RecuperarCuentaController::class, 'reset']);
+
+/* Servicios */
 Route::get('/servicios', [ServicioController::class, 'index']);

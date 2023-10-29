@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Notifications\EmailVerification;
+use App\Notifications\NewPasswordNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -46,6 +47,12 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function sendPasswordResetNotification($token)
+    {
+        $url = config('app.front') . '/new-password?token=' . $token;
+        $this->notify(new NewPasswordNotification($url));
+    }
 
     public function sendEmailVerificationNotification()
     {
