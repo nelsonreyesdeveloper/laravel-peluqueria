@@ -13,16 +13,22 @@ class Cita extends Model
         'user_id',
         'fecha_cita',
         'hora_cita',
-        'total',
         'estado',
+        'factura_id'
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-    
-    public function servicios(){
-        return $this->belongsToMany(Servicio::class , 'citas_servicios')->withPivot('subtotal', 'cantidad');
+
+    public function factura()
+    {
+        return $this->belongsTo(Factura::class);
+    }
+
+    public function servicios()
+    {
+        return $this->belongsToMany(Servicio::class, 'citas_servicios')->withPivot('subtotal', 'cantidad');
     }
 }

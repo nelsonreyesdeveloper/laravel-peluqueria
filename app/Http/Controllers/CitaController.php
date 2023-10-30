@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Notifications\EmailNewCitaUser;
 use Carbon\Carbon;
 use App\Models\Cita;
 use App\Models\User;
+use App\Models\Factura;
 use Illuminate\Http\Request;
 use App\Models\CitasServicios;
 use App\Http\Resources\CitaCollection;
+use App\Models\FacturaMetodoPago;
+use App\Notifications\EmailNewCitaUser;
 use App\Notifications\EmailNewCitaAdmin;
 
 class CitaController extends Controller
@@ -33,7 +35,7 @@ class CitaController extends Controller
 
         $fechaActual = Carbon::today()->format('Y-m-d');
         // Crea una instancia de Carbon con la fecha y hora actual en El Salvador
-        return new CitaCollection(Cita::with('user')->with('servicios')->where('estado', 0)
+        return new CitaCollection(Cita::with('user')->with('servicios')->with('factura')->where('estado', 0)
             ->when($request->fecha, function ($query) use ($request) {
                 $query->where('fecha_cita', $request->fecha);
             }, function ($query) use ($fechaActual) {
@@ -47,6 +49,7 @@ class CitaController extends Controller
      */
     public function store(Request $request)
     {
+
 
         $citaRepetida = Cita::where('hora_cita', $request->citaPost['hora_cita'])->where('fecha_cita', $request->citaPost['fecha_cita'])->get();
 
@@ -64,11 +67,22 @@ class CitaController extends Controller
         try {
             $user = auth()->user();
 
+            $factura = Factura::create([
+                'user_id' => $user->id,
+                'total' => $request->citaPost['total'],
+                'pagada' => $request->metodo == 1 ? 0 : 1,
+            ]);
+
+            FacturaMetodoPago::create([
+                'factura_id' => $factura->id,
+                'metodos_pago_id' => $request->metodo
+            ]);
+
             $cita = Cita::create([
                 'user_id' =>  $user->id,
                 'fecha_cita' => $request->citaPost['fecha_cita'],
                 'hora_cita' => $request->citaPost['hora_cita'],
-                'total' => $request->citaPost['total']
+                'factura_id' => $factura->id,
             ]);
 
             foreach ($request->servicios as $servicio) {
