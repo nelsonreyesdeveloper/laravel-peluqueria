@@ -31,4 +31,7 @@ class Cita extends Model
     {
         return $this->belongsToMany(Servicio::class, 'citas_servicios')->withPivot('subtotal', 'cantidad');
     }
+
+  
+   
 }

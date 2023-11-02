@@ -35,7 +35,7 @@ class CitaController extends Controller
 
         $fechaActual = Carbon::today()->format('Y-m-d');
         // Crea una instancia de Carbon con la fecha y hora actual en El Salvador
-        return new CitaCollection(Cita::with('user')->with('servicios')->with('factura')->where('estado', 0)
+        return new CitaCollection(Cita::with('user','servicios','factura.metodo')->where('estado', 0)
             ->when($request->fecha, function ($query) use ($request) {
                 $query->where('fecha_cita', $request->fecha);
             }, function ($query) use ($fechaActual) {
@@ -120,6 +120,10 @@ class CitaController extends Controller
         $cita = Cita::find($cita);
         $cita->estado = 1;
         $cita->save();
+
+        $factura = Factura::find($request->factura);
+        $factura->pagada = 1;
+        $factura->save();
         return response()->json(['data' => 'Cita actualizada'], 200);
     }
 

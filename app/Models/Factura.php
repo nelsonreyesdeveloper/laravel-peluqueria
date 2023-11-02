@@ -14,4 +14,9 @@ class Factura extends Model
         'total',
         'pagada'
     ];
+
+    public function metodo()
+    {
+        return $this->belongsToMany(MetodosPago::class, 'factura_metodo_pagos', 'factura_id', 'metodos_pago_id');
+    }
 }
