@@ -41,9 +41,12 @@ class EmailNewCitaUser extends Notification
 
         $serviciosLines = [];
 
+        $total = 0;
+
         foreach ($this->cita->servicios as $servicio) {
             $servicioLine = $servicio->nombre . ' CANTIDAD: ' . $servicio->pivot->cantidad . ' SUBTOTAL: $' . $servicio->pivot->subtotal;
             $serviciosLines[] = $servicioLine;
+            $total += $servicio->pivot->subtotal;
         }
 
         $message = (new MailMessage)
@@ -57,7 +60,7 @@ class EmailNewCitaUser extends Notification
             $message->line($servicioLine);
         }
 
-        return $message->line('El monto total de la cita es: $' . $this->cita->total);
+        return $message->line('El monto total de la cita es: $' . $total);
     }
 
     /**

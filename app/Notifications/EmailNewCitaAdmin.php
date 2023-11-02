@@ -42,10 +42,12 @@ class EmailNewCitaAdmin extends Notification
         $fecha =  Carbon::parse($this->cita->fecha_cita)->locale('es')->isoFormat('D [de] MMMM [de] YYYY');
 
         $serviciosLines = [];
+        $total = 0;
 
         foreach ($this->cita->servicios as $servicio) {
             $servicioLine = $servicio->nombre . ' CANTIDAD: ' . $servicio->pivot->cantidad . ' SUBTOTAL: $' . $servicio->pivot->subtotal;
             $serviciosLines[] = $servicioLine;
+            $total += $servicio->pivot->subtotal;
         }
 
         $message = (new MailMessage)
@@ -58,7 +60,7 @@ class EmailNewCitaAdmin extends Notification
             $message->line($servicioLine);
         }
 
-        return $message->line('El cliente debera pagar: $' . $this->cita->total);
+        return $message->line('El cliente debera pagar: $' . $total);
     }
 
     /**
